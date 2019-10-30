@@ -53,7 +53,9 @@ func ParseDuration(value string) (time.Duration, error) {
 		case "year":
 			d += year * time.Duration(value)
 		case "month":
-			return time.Duration(0), ErrNoMonth
+			if value != 0 {
+				return time.Duration(0), ErrNoMonth
+			}
 		case "week":
 			d += week * time.Duration(value)
 		case "day":

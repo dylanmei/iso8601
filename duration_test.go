@@ -15,7 +15,13 @@ func Test_parse_duration(t *testing.T) {
 		t.Fatalf("Expected an ErrBadFormat")
 	}
 
-	// test with month
+	// test with zero month
+	_, err = ParseDuration("P0M")
+	if err != nil {
+		t.Fatalf("Did not expect err: %v", err)
+	}
+
+	// test with non zero month
 	_, err = ParseDuration("P1M")
 	if err != ErrNoMonth {
 		t.Fatalf("Expected an ErrNoMonth")
@@ -34,10 +40,10 @@ func Test_parse_duration(t *testing.T) {
 		t.Errorf("Expected %v minutes, not %v", exp.Hours(), dur.Minutes())
 	}
 	if dur.Seconds() != exp.Seconds() {
-		t.Errorf("Expected 5 seconds, not %v", exp.Nanoseconds(), dur.Seconds())
+		t.Errorf("Expected %v seconds, not %v", exp.Seconds(), dur.Seconds())
 	}
 	if dur.Nanoseconds() != exp.Nanoseconds() {
-		t.Error("Expected %v nanoseconds, not %v", exp.Nanoseconds(), dur.Nanoseconds())
+		t.Errorf("Expected %v nanoseconds, not %v", exp.Nanoseconds(), dur.Nanoseconds())
 	}
 
 	// test with good week string
@@ -46,7 +52,7 @@ func Test_parse_duration(t *testing.T) {
 		t.Fatalf("Did not expect err: %v", err)
 	}
 	if dur.Hours() != 24*7 {
-		t.Errorf("Expected 168 hours, not %d", dur.Hours())
+		t.Errorf("Expected 168 hours, not %v", dur.Hours())
 	}
 }
 
