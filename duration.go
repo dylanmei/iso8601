@@ -93,6 +93,7 @@ func FormatDuration(duration time.Duration) string {
 	hours := int(duration.Hours())
 	minutes := int(duration.Minutes()) - (hours * 60)
 	seconds := int(duration.Seconds()) - (hours*3600 + minutes*60)
+	nanoseconds := int(duration.Nanoseconds()) - (hours*3600+minutes*60+seconds)*1000000000
 
 	// we're not doing Y,M,W
 	s := "PT"
@@ -102,8 +103,9 @@ func FormatDuration(duration time.Duration) string {
 	if minutes > 0 {
 		s = fmt.Sprintf("%s%dM", s, minutes)
 	}
-	if seconds > 0 {
-		s = fmt.Sprintf("%s%dS", s, seconds)
+	if seconds > 0 || nanoseconds > 0 {
+		fseconds := float64(seconds) + float64(nanoseconds)/1000000000.0
+		s = fmt.Sprintf("%s%gS", s, fseconds)
 	}
 
 	return s

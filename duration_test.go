@@ -73,6 +73,14 @@ func Test_format_duration(t *testing.T) {
 		t.Fatalf("bad ISO 8601 duration string: %s", s)
 	}
 
+	// Test duration with seconds and nanoseconds
+	d = time.Duration(42) * time.Second
+	d += time.Duration(123) * time.Nanosecond
+	s = FormatDuration(d)
+	if s != "PT42.000000123S" {
+		t.Fatalf("bad ISO 8601 duration string: %s", s)
+	}
+
 	// Test only minutes duration
 	d = time.Duration(20) * time.Minute
 	s = FormatDuration(d)
