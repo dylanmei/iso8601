@@ -54,6 +54,15 @@ func Test_parse_duration(t *testing.T) {
 	if dur.Hours() != 24*7 {
 		t.Errorf("Expected 168 hours, not %v", dur.Hours())
 	}
+
+	// test with good year string
+	dur, err = ParseDuration("P1Y")
+	if err != nil {
+		t.Fatalf("Did not expect err: %v", err)
+	}
+	if dur.Hours() != 24*365 {
+		t.Errorf("Expected 8760 hours, not %v", dur.Hours())
+	}
 }
 
 func Test_format_duration(t *testing.T) {
