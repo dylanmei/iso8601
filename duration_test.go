@@ -28,8 +28,8 @@ func Test_parse_duration(t *testing.T) {
 	}
 
 	// test with good full string
-	exp, _ := time.ParseDuration("51h4m5s")
-	dur, err = ParseDuration("P2DT3H4M5S")
+	exp, _ := time.ParseDuration("51h4m5s123ns")
+	dur, err = ParseDuration("P2DT3H4M5,00000012300S")
 	if err != nil {
 		t.Fatalf("Did not expect err: %v", err)
 	}

@@ -15,7 +15,7 @@ var (
 	// ErrNoMonth is raised when a month is in the format string
 	ErrNoMonth = errors.New("no months allowed")
 
-	full = regexp.MustCompile(`P((?P<year>\d+)Y)?((?P<month>\d+)M)?((?P<day>\d+)D)?(T((?P<hour>\d+)H)?((?P<minute>\d+)M)?((?P<second>\d+)S)?)?`)
+	full = regexp.MustCompile(`P((?P<year>\d+)Y)?((?P<month>\d+)M)?((?P<day>\d+)D)?(T((?P<hour>\d+)H)?((?P<minute>\d+)M)?((?P<second>\d+)(?P<frac>[\.,]\d+)?S)?)?`)
 	week = regexp.MustCompile(`P((?P<week>\d+)W)`)
 )
 
@@ -45,10 +45,20 @@ func ParseDuration(value string) (time.Duration, error) {
 			continue
 		}
 
+		if name == "frac" {
+			nanoPart := []byte("000000000")
+
+			copy(nanoPart, []byte(part)[1:])
+
+			part = string(nanoPart)
+		}
+
 		value, err := strconv.Atoi(part)
+
 		if err != nil {
 			return time.Duration(0), err
 		}
+
 		switch name {
 		case "year":
 			d += year * time.Duration(value)
@@ -66,6 +76,8 @@ func ParseDuration(value string) (time.Duration, error) {
 			d += time.Minute * time.Duration(value)
 		case "second":
 			d += time.Second * time.Duration(value)
+		case "frac":
+			d += time.Nanosecond * time.Duration(value)
 		}
 	}
 
