@@ -28,8 +28,8 @@ func Test_parse_duration(t *testing.T) {
 	}
 
 	// test with good full string
-	exp, _ := time.ParseDuration("51h4m5s")
-	dur, err = ParseDuration("P2DT3H4M5S")
+	exp, _ := time.ParseDuration("51h4m5s123ns")
+	dur, err = ParseDuration("P2DT3H4M5,00000012300S")
 	if err != nil {
 		t.Fatalf("Did not expect err: %v", err)
 	}
@@ -54,6 +54,15 @@ func Test_parse_duration(t *testing.T) {
 	if dur.Hours() != 24*7 {
 		t.Errorf("Expected 168 hours, not %v", dur.Hours())
 	}
+
+	// test with good year string
+	dur, err = ParseDuration("P1Y")
+	if err != nil {
+		t.Fatalf("Did not expect err: %v", err)
+	}
+	if dur.Hours() != 24*365 {
+		t.Errorf("Expected 8760 hours, not %v", dur.Hours())
+	}
 }
 
 func Test_format_duration(t *testing.T) {
@@ -61,6 +70,14 @@ func Test_format_duration(t *testing.T) {
 	d := time.Duration(3701) * time.Second
 	s := FormatDuration(d)
 	if s != "PT1H1M41S" {
+		t.Fatalf("bad ISO 8601 duration string: %s", s)
+	}
+
+	// Test duration with seconds and nanoseconds
+	d = time.Duration(42) * time.Second
+	d += time.Duration(123) * time.Nanosecond
+	s = FormatDuration(d)
+	if s != "PT42.000000123S" {
 		t.Fatalf("bad ISO 8601 duration string: %s", s)
 	}
 
